@@ -2,6 +2,7 @@ class ProductsController < ApplicationController
   # GET /products
   # GET /products.json
   def index
+    @cart = current_cart
     @products = Product.all
 
     respond_to do |format|
@@ -13,7 +14,9 @@ class ProductsController < ApplicationController
   # GET /products/1
   # GET /products/1.json
   def show
+    @cart = current_cart
     @product = Product.find(params[:id])
+    @orders = @product.orders
 
     respond_to do |format|
       format.html # show.html.erb
