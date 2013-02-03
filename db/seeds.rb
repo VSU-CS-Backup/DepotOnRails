@@ -43,3 +43,6 @@ Product.create(title: 'Rails Test Prescriptions',
       </p>},
   image_url: 'rtp.jpg',
   price: 34.95)
+
+
+User.create(name: 'admin', password: 'admin', password_confirmation: 'admin')
