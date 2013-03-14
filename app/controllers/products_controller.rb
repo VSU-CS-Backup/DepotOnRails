@@ -3,8 +3,19 @@ class ProductsController < ApplicationController
   # GET /products.json
   def index
     @cart = current_cart
-    @products = Product.all
+    #@products = Product.all
 
+    if (session[:user_id]!=nil)
+      user = User.find(session[:user_id])
+      if (user.name == 'admin')
+         @products = Product.all
+      else
+        @products = user.products.all
+      end
+    else
+      @products = Product.all
+    end
+    
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @products }
@@ -43,7 +54,18 @@ class ProductsController < ApplicationController
   # POST /products
   # POST /products.json
   def create
-    @product = Product.new(params[:product])
+     if (params[:product])
+        @product = Product.new(params[:product])
+        @product.user_id = session[:user_id]
+     else
+        params[:product] = {:title=>params[:title], 
+                            :description=>params[:description],   
+                            :image_url=>params[:image_url], 
+                            :price=>params[:price]
+                            }
+        @product = Product.new(params[:product])
+        @product.user_id = session[:user_id]
+    end
 
     respond_to do |format|
       if @product.save
