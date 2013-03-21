@@ -1,5 +1,4 @@
 class ProductsController < ApplicationController
-  #skip_before_filter :authorize, :only => [:index, :update]
   skip_before_filter :verify_authenticity_token
   
   # GET /products
