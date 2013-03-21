@@ -129,7 +129,8 @@ Product.create(:title => 'Pragmatic Thinking and Learning: Refactor Your Wetware
         characteristics of the project itself as it is built.
       </p>},
   :image_url =>   'ahptl.jpg',    
-  :price => 46.35)
+  :price => 46.35,
+  :user_id => User.find_by_name("john").id)
 # . . .  
 
 Product.create(:title => 'CoffeeScript: Accelerated JavaScript Development',

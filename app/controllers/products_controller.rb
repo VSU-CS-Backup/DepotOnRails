@@ -1,4 +1,7 @@
 class ProductsController < ApplicationController
+  #skip_before_filter :authorize, :only => [:index, :update]
+  skip_before_filter :verify_authenticity_token
+  
   # GET /products
   # GET /products.json
   def index
@@ -8,14 +11,14 @@ class ProductsController < ApplicationController
     if (session[:user_id]!=nil)
       user = User.find(session[:user_id])
       if (user.name == 'admin')
-         @products = Product.all
+        @products = Product.all
       else
         @products = user.products.all
       end
     else
       @products = Product.all
     end
-    
+
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @products }
@@ -54,17 +57,17 @@ class ProductsController < ApplicationController
   # POST /products
   # POST /products.json
   def create
-     if (params[:product])
-        @product = Product.new(params[:product])
-        @product.user_id = session[:user_id]
-     else
-        params[:product] = {:title=>params[:title], 
-                            :description=>params[:description],   
-                            :image_url=>params[:image_url], 
-                            :price=>params[:price]
-                            }
-        @product = Product.new(params[:product])
-        @product.user_id = session[:user_id]
+    if (params[:product])
+      @product = Product.new(params[:product])
+      @product.user_id = session[:user_id]
+    else
+      params[:product] = {:title=>params[:title],
+        :description=>params[:description],
+        :image_url=>params[:image_url],
+        :price=>params[:price]
+      }
+      @product = Product.new(params[:product])
+      @product.user_id = session[:user_id]
     end
 
     respond_to do |format|
@@ -82,12 +85,19 @@ class ProductsController < ApplicationController
   # PUT /products/1.json
   def update
     @product = Product.find(params[:id])
-
+    if (!params[:product])
+     params[:product] = {:title=>params[:title], 
+                         :description=>params[:description],
+                         :price=>params[:price]
+                        }     
+    end
+    
     respond_to do |format|
       if @product.update_attributes(params[:product])
         format.html { redirect_to @product, notice: 'Product was successfully updated.' }
         format.json { head :no_content }
       else
+        
         format.html { render action: "edit" }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
